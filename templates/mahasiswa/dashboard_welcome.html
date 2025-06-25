@@ -1,0 +1,66 @@
+{% extends 'mahasiswa/base_mahasiswa.html' %} {% block title %}Dashboard{%
+endblock %} {% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center mb-4">
+    <div class="col-lg-10 text-center">
+      <div class="bg-white p-5 rounded shadow-sm border">
+        <h1 class="display-6 fw-bold">
+          Selamat Datang,
+          <span class="text-primary">{{ current_user.nama_lengkap }}!</span>
+        </h1>
+        <p class="text-muted mt-3">
+          Selamat datang di
+          <strong>Sistem Pakar Beasiswa</strong>! Sistem ini membantu Anda dalam
+          melakukan simulasi dan prediksi kelayakan beasiswa berdasarkan
+          berbagai kriteria.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Informasi Sistem -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-primary">
+            <i class="bi bi-info-circle-fill me-2"></i>Informasi Sistem
+          </h5>
+          <p class="card-text text-muted">
+            Sistem ini menggunakan metode Fuzzy Logic untuk membantu Anda
+            menilai apakah Anda memenuhi syarat untuk mendapatkan beasiswa.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panduan -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-success">
+            <i class="bi bi-book-fill me-2"></i>Panduan Penggunaan
+          </h5>
+          <p class="card-text text-muted">
+            Klik tombol di bawah ini untuk memulai pengecekan. Anda akan diminta
+            mengisi kriteria yang diperlukan seperti IPK, penghasilan orang tua,
+            prestasi, dan lainnya.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="row mt-5">
+    <div class="col text-center">
+      <a
+        href="{{ url_for('halaman_pengecekan') }}"
+        class="btn btn-lg btn-primary px-4"
+      >
+        <i class="bi bi-check-circle me-2"></i>Mulai Pengecekan Kelayakan
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

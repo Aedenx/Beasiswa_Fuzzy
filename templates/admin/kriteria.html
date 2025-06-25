@@ -1,0 +1,95 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Manajemen Kriteria{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Manajemen Kriteria</h1>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        Tambah Kriteria Baru
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin_kriteria') }}">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="kode_kriteria" class="form-label">Kode Kriteria</label>
+                    <input type="text" name="kode_kriteria" class="form-control" placeholder="Contoh: PENGHASILAN" required>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                    <input type="text" name="nama_kriteria" class="form-control" placeholder="Contoh: Penghasilan Orang Tua" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="tipe" class="form-label">Tipe</label>
+                    <select name="tipe" class="form-select" required>
+                        <option value="input">Input</option>
+                        <option value="output">Output</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end mb-3">
+                    <button type="submit" class="btn btn-primary w-100">Tambah</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        Daftar Kriteria Saat Ini
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Kode Kriteria</th>
+                        <th>Nama Kriteria</th>
+                        <th>Tipe</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+               <tbody>
+    {% for kriteria in daftar_kriteria %}
+    <tr>
+        <td>{{ kriteria.id }}</td>
+        <td>{{ kriteria.kode_kriteria }}</td>
+        <td>{{ kriteria.nama_kriteria }}</td>
+        <td><span class="badge bg-{{ 'primary' if kriteria.tipe == 'input' else 'success' }}">{{ kriteria.tipe }}</span></td>
+        <td>
+            <div class="d-flex">
+                <a href="{{ url_for('admin_himpunan_fuzzy', kriteria_id=kriteria.id) }}" class="btn btn-info btn-sm me-2">Atur Himpunan</a>
+                
+                <a href="{{ url_for('admin_kriteria_edit', kriteria_id=kriteria.id) }}" class="btn btn-warning btn-sm me-2">Edit</a>
+                <form action="{{ url_for('admin_kriteria_hapus', kriteria_id=kriteria.id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kriteria ini?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="5" class="text-center">Belum ada kriteria yang ditambahkan.</td>
+    </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

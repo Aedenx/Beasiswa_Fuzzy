@@ -1,0 +1,150 @@
+{% extends 'admin/base_admin.html' %} {% block title %}Admin Dashboard{%
+endblock %} {% block content %}
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <h1 class="h2">Dashboard</h1>
+  <div class="h5 text-muted">
+    Selamat Datang, <strong>{{ current_user.username }}!</strong>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+              Total Mahasiswa
+            </div>
+            <div class="h5 mb-0 fw-bold text-gray-800">
+              {{ stats.total_mahasiswa }}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="bi bi-people-fill fs-2 text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+              Total Kriteria
+            </div>
+            <div class="h5 mb-0 fw-bold text-gray-800">
+              {{ stats.total_kriteria }}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="bi bi-list-check fs-2 text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-4">
+    <div class="card border-left-info shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+              Aturan Pakar
+            </div>
+            <div class="h5 mb-0 fw-bold text-gray-800">
+              {{ stats.total_aturan_pakar }}
+            </div>
+          </div>
+          <div class="col-auto">
+            <i class="bi bi-journal-text fs-2 text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 fw-bold text-primary">Ringkasan Data Sistem</h6>
+      </div>
+      <div class="card-body">
+        <div id="summaryChart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+  }
+  .border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+  }
+  .border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+  }
+  .text-gray-300 {
+    color: #dddfeb !important;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      var options = {
+        series: [{
+            name: 'Jumlah',
+            data: [{{ stats.total_mahasiswa }}, {{ stats.total_kriteria }}, {{ stats.total_aturan_pakar }}]
+      }],
+        chart: {
+        height: 350,
+        type: 'bar',
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          horizontal: false,
+          columnWidth: '40%',
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ['transparent']
+      },
+      xaxis: {
+        categories: ['Mahasiswa', 'Kriteria', 'Aturan Pakar'],
+      },
+      yaxis: {
+        title: {
+          text: 'Jumlah Total'
+        }
+      },
+      fill: {
+        opacity: 1
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+      };
+
+      var chart = new ApexCharts(document.querySelector("#summaryChart"), options);
+      chart.render();
+  });
+</script>
+{% endblock %}

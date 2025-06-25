@@ -1,0 +1,48 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Edit Himpunan Fuzzy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div>
+        <h1 class="h2">Edit Himpunan Fuzzy</h1>
+        <p class="text-muted">Untuk Kriteria: <strong>{{ kriteria.nama_kriteria }}</strong></p>
+    </div>
+    <a href="{{ url_for('admin_himpunan_fuzzy', kriteria_id=kriteria.id) }}" class="btn btn-outline-secondary">Kembali</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        Mengubah Himpunan: {{ himpunan.nama_himpunan }}
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Nama Himpunan</label>
+                    <input type="text" name="nama_himpunan" class="form-control" value="{{ himpunan.nama_himpunan }}" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nilai 1 (a)</label>
+                    <input type="number" step="any" name="nilai1" class="form-control" value="{{ himpunan.nilai1 }}" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nilai 2 (b)</label>
+                    <input type="number" step="any" name="nilai2" class="form-control" value="{{ himpunan.nilai2 }}" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nilai 3 (c)</label>
+                    <input type="number" step="any" name="nilai3" class="form-control" value="{{ himpunan.nilai3 }}" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nilai 4 (d)</label>
+                    <input type="number" step="any" name="nilai4" class="form-control" value="{{ himpunan.nilai4 }}" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-success w-100">Simpan</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

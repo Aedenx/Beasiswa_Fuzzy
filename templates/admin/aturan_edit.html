@@ -1,0 +1,62 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Edit Aturan Fuzzy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Edit Aturan #{{ aturan.id }}</h1>
+    <a href="{{ url_for('admin_aturan') }}" class="btn btn-outline-secondary">Kembali ke Daftar Aturan</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        Mengubah Aturan IF ... THEN ...
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Nama Aturan (Opsional)</label>
+                <input type="text" name="nama_aturan" class="form-control" value="{{ aturan.nama_aturan }}">
+            </div>
+
+            <label class="form-label fw-bold">Kondisi (IF)</label>
+            {% set kondisi_terpilih = aturan_detail.kondisi | map(attribute='himpunan_id') | list %}
+            {% for i in range(4) %}
+            <div class="input-group mb-2">
+                <span class="input-group-text">IF</span>
+                <select name="kondisi_himpunan_id" class="form-select">
+                    <option value="">-- Abaikan Kondisi {{ i + 1 }} --</option>
+                    {% set current_selection = kondisi_terpilih[i] if i < kondisi_terpilih|length else none %}
+                    {% for k_id, k_data in kriteria_data.items() %}
+                        {% if k_data.tipe == 'input' %}
+                            <optgroup label="{{ k_data.nama }}">
+                                {% for h in k_data.himpunan %}
+                                    <option value="{{ h.id }}" {% if h.id == current_selection %}selected{% endif %}>{{ h.nama_himpunan }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+            
+            <label class="form-label fw-bold mt-3">Konsekuen (THEN)</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">THEN</span>
+                 <select name="konsekuen_himpunan_id" class="form-select" required>
+                    {% for k_id, k_data in kriteria_data.items() %}
+                        {% if k_data.tipe == 'output' %}
+                            <optgroup label="{{ k_data.nama }}">
+                                {% for h in k_data.himpunan %}
+                                    <option value="{{ h.id }}" {% if h.id == aturan_detail.konsekuen.himpunan_id %}selected{% endif %}>{{ h.nama_himpunan }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

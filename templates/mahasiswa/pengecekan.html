@@ -1,0 +1,234 @@
+{% extends 'mahasiswa/base_mahasiswa.html' %} {% block title %}Cek Kelayakan
+Beasiswa{% endblock %} {% block content %}
+<div class="container-fluid py-4">
+  <div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+    <h1 class="display-6 fw-bold">Simulasi Kelayakan Beasiswa</h1>
+    <p class="col-lg-10 fs-5">
+      Selamat datang, <strong>{{ current_user.nama_lengkap }}</strong>. Masukkan
+      data Anda pada formulir di bawah untuk mendapatkan simulasi kelayakan
+      beasiswa.
+    </p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">
+          <ul class="nav nav-pills card-header-pills nav-fill">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="input-tab-link"
+                data-bs-toggle="tab"
+                href="#input-tab"
+                role="tab"
+                ><b>1.</b> Masukkan Data</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link disabled"
+                id="hasil-tab-link"
+                data-bs-toggle="tab"
+                href="#hasil-tab"
+                role="tab"
+                ><b>2.</b> Hasil Analisis</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="card-body p-4">
+          <div class="tab-content">
+            <div
+              class="tab-pane fade show active"
+              id="input-tab"
+              role="tabpanel"
+            >
+              <form id="cek-form">
+                {% for kriteria in kriteria_input %}
+                <div class="mb-3">
+                  <label
+                    for="{{ kriteria.kode_kriteria }}"
+                    class="form-label fw-semibold"
+                    >{{ kriteria.nama_kriteria }}</label
+                  >
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control"
+                    name="{{ kriteria.kode_kriteria }}"
+                    id="{{ kriteria.kode_kriteria }}"
+                    required
+                    placeholder="Contoh: {% if 'nilai' in kriteria.kode_kriteria %}85.5{% elif 'penghasilan' in kriteria.kode_kriteria %}2.5{% else %}3{% endif %}"
+                  />
+                </div>
+                {% endfor %}
+                <div class="d-grid mt-4">
+                  <button
+                    id="cek-button"
+                    type="submit"
+                    class="btn btn-primary btn-lg"
+                  >
+                    Cek Kelayakan
+                  </button>
+                  <div id="loading-spinner" class="d-none text-center mt-3">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Menganalisis data...</p>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-pane fade" id="hasil-tab" role="tabpanel">
+              <h4 class="mb-4">Hasil Analisis Kelayakan</h4>
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="p-3 border rounded bg-light">
+                    <h6 class="text-muted">Hasil Kalkulasi Fuzzy</h6>
+                    <p class="fs-1 fw-bolder text-primary mb-0" id="hasil-skor">
+                      0.0
+                    </p>
+                    <p class="fs-5" id="hasil-interpretasi">-</p>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="p-3 border rounded">
+                    <h6 class="text-muted">Rekomendasi Sistem Pakar</h6>
+                    <p class="fs-4 fw-bold text-success" id="rekomendasi-aksi">
+                      -
+                    </p>
+                    <p class="mb-0" id="rekomendasi-alasan">...</p>
+                  </div>
+                </div>
+              </div>
+              <div class="d-grid mt-4">
+                <button id="cek-ulang-button" class="btn btn-outline-primary">
+                  Lakukan Simulasi Ulang
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="card shadow-sm h-100">
+        <div class="card-header fs-5 fw-bold">Grafik Fungsi Keanggotaan</div>
+        <div class="card-body">
+          <div class="row">
+            {% for kriteria in kriteria_input %}
+            <div
+              class="col-md-6 mb-4"
+              style="position: relative; min-height: 280px"
+            >
+              <h6 class="text-center text-muted">
+                {{ kriteria.nama_kriteria }}
+              </h6>
+              <div id="chart-{{ kriteria.kode_kriteria }}"></div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const chartData = {{ chart_data | tojson }};
+      const charts = {}; // Objek untuk menyimpan instance chart
+
+      const inputTabLink = document.getElementById('input-tab-link');
+      const hasilTabLink = document.getElementById('hasil-tab-link');
+      const inputTab = new bootstrap.Tab(inputTabLink);
+      const hasilTab = new bootstrap.Tab(hasilTabLink);
+
+      function renderChart(key, value, annotationX = null) {
+          const chartDiv = document.getElementById(`chart-${key}`);
+          if (!chartDiv) return;
+          const options = {
+              chart: { type: 'line', height: 250, toolbar: { show: false }, animations: { enabled: false } },
+              series: value.datasets.map(d => ({ name: d.label, data: d.data })),
+              xaxis: { categories: value.labels, labels: { show: false }, tooltip: { enabled: false } },
+              yaxis: { min: 0, max: 1.1, title: { text: 'Derajat', style: {fontSize: '12px'} } },
+              stroke: { curve: 'straight', width: 2 },
+              legend: { position: 'top' }
+          };
+          if (annotationX !== null) {
+              options.annotations = {
+                  xaxis: [{ x: annotationX, borderColor: '#0d6efd', label: { borderColor: '#0d6efd', style: { color: '#fff', background: '#0d6efd' }, text: 'Nilai Anda' } }]
+              };
+          }
+          if (charts[key]) {
+              charts[key].updateOptions(options);
+          } else {
+              charts[key] = new ApexCharts(chartDiv, options);
+              charts[key].render();
+          }
+      }
+
+      for (const [key, value] of Object.entries(chartData)) {
+          renderChart(key, value);
+      }
+
+      document.querySelectorAll('#cek-form input[type="number"]').forEach(input => {
+          input.addEventListener('input', function() {
+              const kriteriaKey = this.name;
+              const inputValue = parseFloat(this.value);
+              if (!isNaN(inputValue) && chartData[kriteriaKey]) {
+                  const closestLabel = chartData[kriteriaKey].labels.reduce((prev, curr) => (Math.abs(curr - inputValue) < Math.abs(prev - inputValue) ? curr : prev));
+                  renderChart(kriteriaKey, chartData[kriteriaKey], closestLabel);
+              }
+          });
+      });
+
+      const form = document.getElementById('cek-form');
+      const cekButton = document.getElementById('cek-button');
+      const loadingSpinner = document.getElementById('loading-spinner');
+
+      form.addEventListener('submit', function(event) {
+          event.preventDefault();
+          cekButton.classList.add('d-none');
+          loadingSpinner.classList.remove('d-none');
+
+          fetch("{{ url_for('cek_kelayakan') }}", { method: 'POST', body: new FormData(form) })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'sukses') {
+                  document.getElementById('hasil-skor').textContent = data.hasil_fuzzy.skor;
+                  document.getElementById('hasil-interpretasi').textContent = data.hasil_fuzzy.interpretasi;
+                  document.getElementById('rekomendasi-aksi').textContent = data.hasil_pakar.rekomendasi;
+                  document.getElementById('rekomendasi-alasan').textContent = "Alasan: " + data.hasil_pakar.penjelasan;
+
+                  // Aktifkan dan pindah ke tab hasil
+                  hasilTabLink.classList.remove('disabled');
+                  hasilTab.show();
+
+              } else { alert('Terjadi kesalahan: ' + data.message); }
+          }).catch(error => {
+              console.error('Fetch Error:', error);
+              alert('Gagal menghubungi server.');
+          }).finally(() => {
+              cekButton.classList.remove('d-none');
+              loadingSpinner.classList.add('d-none');
+          });
+      });
+
+      document.getElementById('cek-ulang-button').addEventListener('click', function() {
+          // Kembali ke tab input
+          inputTab.show();
+          hasilTabLink.classList.add('disabled');
+          form.reset();
+          for (const [key, value] of Object.entries(chartData)) {
+              renderChart(key, value);
+          }
+      });
+  });
+</script>
+{% endblock %}

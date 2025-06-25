@@ -1,0 +1,60 @@
+{% extends 'admin/base_admin.html' %} {% block title %}{{ 'Edit' if pengguna
+else 'Tambah' }} Pengguna{% endblock %} {% block content %}
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <h1 class="h2">{{ 'Edit' if pengguna else 'Tambah' }} Akun Mahasiswa</h1>
+  <a
+    href="{{ url_for('admin_daftar_pengguna') }}"
+    class="btn btn-outline-secondary"
+    >Kembali ke Daftar</a
+  >
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="POST">
+      <div class="mb-3">
+        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+        <input
+          type="text"
+          name="nama_lengkap"
+          class="form-control"
+          value="{{ pengguna.nama_lengkap if pengguna else '' }}"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          type="text"
+          name="username"
+          class="form-control"
+          value="{{ pengguna.username if pengguna else '' }}"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          {%
+          if
+          not
+          pengguna
+          %}required{%
+          endif
+          %}
+        />
+        <div class="form-text">
+          {% if pengguna %} Kosongkan jika tidak ingin mengubah password. {%
+          else %} Password wajib diisi untuk pengguna baru. {% endif %}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Simpan</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

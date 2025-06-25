@@ -1,0 +1,158 @@
+{% extends 'admin/base_admin.html' %} {% block title %}Atur Himpunan Fuzzy{%
+endblock %} {% block content %}
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <div>
+    <h1 class="h2">Manajemen Himpunan Fuzzy</h1>
+    <p class="text-muted">
+      Untuk Kriteria: <strong>{{ kriteria.nama_kriteria }}</strong>
+    </p>
+  </div>
+  <a href="{{ url_for('admin_kriteria') }}" class="btn btn-outline-secondary"
+    >Kembali ke Daftar Kriteria</a
+  >
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div
+  class="alert alert-{{ category }} alert-dismissible fade show"
+  role="alert"
+>
+  {{ message }}
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header">Tambah Himpunan Fuzzy Baru</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="row align-items-end">
+        <div class="col-md-3 mb-3">
+          <label for="nama_himpunan" class="form-label">Nama Himpunan</label>
+          <input
+            type="text"
+            name="nama_himpunan"
+            class="form-control"
+            placeholder="Contoh: Rendah"
+            required
+          />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="nilai1" class="form-label">Nilai 1 (a)</label>
+          <input
+            type="number"
+            step="any"
+            name="nilai1"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="nilai2" class="form-label">Nilai 2 (b)</label>
+          <input
+            type="number"
+            step="any"
+            name="nilai2"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="nilai3" class="form-label">Nilai 3 (c)</label>
+          <input
+            type="number"
+            step="any"
+            name="nilai3"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col-md-2 mb-3">
+          <label for="nilai4" class="form-label">Nilai 4 (d)</label>
+          <input
+            type="number"
+            step="any"
+            name="nilai4"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="col-md-1 mb-3">
+          <button type="submit" class="btn btn-primary w-100">Tambah</button>
+        </div>
+      </div>
+      <div class="form-text mt-2">
+        Untuk fungsi <b>segitiga</b>, isi Nilai 2 dan Nilai 3 dengan angka yang
+        sama. Untuk fungsi <b>trapesium</b>, isi dengan nilai yang berbeda.
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header">
+    Daftar Himpunan Fuzzy Saat Ini untuk "{{ kriteria.nama_kriteria }}"
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nama Himpunan</th>
+            <th>Nilai 1 (a)</th>
+            <th>Nilai 2 (b)</th>
+            <th>Nilai 3 (c)</th>
+            <th>Nilai 4 (d)</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for himpunan in daftar_himpunan %}
+          <tr>
+            <td>{{ himpunan.id }}</td>
+            <td>{{ himpunan.nama_himpunan }}</td>
+            <td>{{ himpunan.nilai1 }}</td>
+            <td>{{ himpunan.nilai2 }}</td>
+            <td>{{ himpunan.nilai3 }}</td>
+            <td>{{ himpunan.nilai4 }}</td>
+            <td>
+              <div class="d-flex">
+                <a
+                  href="{{ url_for('admin_himpunan_edit', himpunan_id=himpunan.id) }}"
+                  class="btn btn-warning btn-sm me-2"
+                  >Edit</a
+                >
+                <form
+                  action="{{ url_for('admin_himpunan_hapus', himpunan_id=himpunan.id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus himpunan ini?');"
+                >
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Hapus
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center">
+              Belum ada himpunan fuzzy yang ditambahkan untuk kriteria ini.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

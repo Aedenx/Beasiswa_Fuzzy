@@ -1,0 +1,129 @@
+{% extends 'admin/base_admin.html' %} {% block title %}Manajemen Aturan Fuzzy{%
+endblock %} {% block content %}
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <h1 class="h2">Manajemen Aturan (Rules)</h1>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div
+  class="alert alert-{{ category }} alert-dismissible fade show"
+  role="alert"
+>
+  {{ message }}<button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header">Buat Aturan IF ... THEN ... Baru</div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Nama Aturan (Opsional)</label>
+        <input
+          type="text"
+          name="nama_aturan"
+          class="form-control"
+          placeholder="Contoh: Kandidat Prioritas Tinggi"
+        />
+      </div>
+
+      <label class="form-label fw-bold">Kondisi (IF)</label>
+      <p class="form-text">
+        Pilih 1 hingga 4 kondisi. Biarkan kosong jika tidak digunakan.
+      </p>
+      {% for i in range(4) %}
+      <div class="input-group mb-2">
+        <span class="input-group-text">IF</span>
+        <select name="kondisi_himpunan_id" class="form-select">
+          <option value="">-- Abaikan Kondisi {{ i + 1 }} --</option>
+          {% for k_id, k_data in kriteria_data.items() %} {% if k_data.tipe ==
+          'input' %}
+          <optgroup label="{{ k_data.nama }}">
+            {% for h in k_data.himpunan %}
+            <option value="{{ h.id }}">{{ h.nama_himpunan }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      {% endfor %}
+
+      <label class="form-label fw-bold mt-3">Konsekuen (THEN)</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text">THEN</span>
+        <select name="konsekuen_himpunan_id" class="form-select" required>
+          <option value="">-- Pilih Konsekuen --</option>
+          {% for k_id, k_data in kriteria_data.items() %} {% if k_data.tipe ==
+          'output' %}
+          <optgroup label="{{ k_data.nama }}">
+            {% for h in k_data.himpunan %}
+            <option value="{{ h.id }}">{{ h.nama_himpunan }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endif %} {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">Simpan Aturan</button>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header">Daftar Aturan Saat Ini</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Kondisi (IF)</th>
+            <th>Konsekuen (THEN)</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for aturan in daftar_aturan %}
+          <tr>
+            <td>{{ aturan.id }}</td>
+            <td>{{ aturan.kondisi | safe }}</td>
+            <td>{{ aturan.konsekuen }}</td>
+            <td>
+              <div class="d-flex">
+                <a
+                  href="{{ url_for('admin_aturan_edit', aturan_id=aturan.id) }}"
+                  class="btn btn-warning btn-sm me-2"
+                  >Edit</a
+                >
+                <form
+                  action="{{ url_for('admin_aturan_hapus', aturan_id=aturan.id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus aturan ini?');"
+                >
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Hapus
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center">
+              Belum ada aturan yang dibuat.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

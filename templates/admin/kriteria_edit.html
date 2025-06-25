@@ -1,0 +1,39 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Edit Kriteria{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Edit Kriteria</h1>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        Mengubah Kriteria: {{ kriteria.nama_kriteria }}
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="kode_kriteria" class="form-label">Kode Kriteria</label>
+                    <input type="text" name="kode_kriteria" class="form-control" value="{{ kriteria.kode_kriteria }}" required>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                    <input type="text" name="nama_kriteria" class="form-control" value="{{ kriteria.nama_kriteria }}" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="tipe" class="form-label">Tipe</label>
+                    <select name="tipe" class="form-select" required>
+                        <option value="input" {% if kriteria.tipe == 'input' %}selected{% endif %}>Input</option>
+                        <option value="output" {% if kriteria.tipe == 'output' %}selected{% endif %}>Output</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end mb-3">
+                    <button type="submit" class="btn btn-success w-100">Simpan Perubahan</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
