@@ -5,9 +5,9 @@ Aplikasi web ini dibangun untuk menentukan kelayakan seorang mahasiswa dalam men
 ## Screenshot Aplikasi
 *(Sangat disarankan untuk menaruh beberapa gambar tampilan aplikasi di sini. Tunjukkan halaman login, dashboard admin, dan halaman pengecekan mahasiswa)*
 
-![Halaman Login](LINK_GAMBAR_LOGIN_DISINI)
-![Dashboard Admin](LINK_GAMBAR_ADMIN_DISINI)
-![Halaman Pengecekan](LINK_GAMBAR_MAHASISWA_DISINI)
+![Halaman Login]![Image](https://github.com/user-attachments/assets/9387fb52-f61f-48d1-85f3-a102f0fc6079)
+![Dashboard Admin]![Image](https://github.com/user-attachments/assets/3c08f264-50b9-49dc-9ff6-1e056943934f)
+![Halaman Pengecekan]![Image](https://github.com/user-attachments/assets/267ded42-9012-4a74-88d0-d69d80c0bd91)
 
 ## Teknologi yang Digunakan
 * **Framework Backend:** Flask
