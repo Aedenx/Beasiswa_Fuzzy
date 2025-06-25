@@ -9,6 +9,9 @@ Aplikasi web ini dibangun untuk menentukan kelayakan seorang mahasiswa dalam men
 ![Dashboard Admin]![Image](https://github.com/user-attachments/assets/3c08f264-50b9-49dc-9ff6-1e056943934f)
 ![Halaman Login]![Image](https://github.com/user-attachments/assets/267ded42-9012-4a74-88d0-d69d80c0bd91)
 
+
+Demo Video https://drive.google.com/file/d/1XvcIHm5cAhbDQ1y8Kc6Sbs_6HLiCosBB/view?usp=drive_link
+
 ## Teknologi yang Digunakan
 * **Framework Backend:** Flask
 * **Database:** MySQL
